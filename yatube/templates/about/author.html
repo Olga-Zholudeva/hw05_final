@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Об авторе проекта{% endblock %}
+{% block content %}
+{% load static %}
+<style>body {background-color: #99ccff} </style>
+<h1>Привет, я автор!</h1>
+<p>
+  Меня зовут Ольга Жолудева. Я только начала свой пусть в освоении профессии бэкэнд разработчика. 
+  Тут <a href='https://github.com/Olga-Zholudeva?tab=repositories'> https://github.com/Olga-Zholudeva?tab=repositories </a> находятся мои проекты в Github.
+</p>
+<p>
+   В мир программирования я пришла не случайно. Очень давно хотелось освоить эту профессию и вот наконец нашла дл этого необходимые ресурсы. Учиться мне помогает моя кошка Василиса. 
+   Заставляет меня переключиться на игры с ней, когда считает что мне уже пора отдохнуть.
+</p>
+<p>
+  А вот как <span style="color:orange">Васька</span> наблюдает за процессом моего обучения :)
+</p>
+<p class="aligncenter">
+  <img src="{% static 'img/img.png' %}" width="400" height="300" class="d-inline-block align-top" alt='изображение в центре параграфа'">
+</p>
+<style> .aligncenter { text-align: center; } </style>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Технологии{% endblock %}
+{% block content %}
+{% load static %}
+<style>body {background-color: #99ccff} </style>
+<div class="row">
+  <h1>Вот что я умею</h1>
+  <aside class="col-12 col-md-3">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Python
+      </li>
+      <li class="list-group-item">
+        Django
+      </li>
+    </ul>
+  </aside>
+  <article class="col-12 col-md-9">
+    <p>Без базовых знаний языка программирования Python тут не обошлось. </p>
+    <p>Для создания сайта пришлось изучить Django, его готовые решения. Познакомиться с HTML и стилями оформления страниц CSS</p>
+    <h1><p>Легко ничего не далось  :) </p></h1>
+  </article>
+</div>
+<p class="aligncenter">
+  <img src="{% static 'img/comic.png' %}" width="400" height="300" class="d-inline-block align-top" alt='изображение в центре параграфа'">
+</p>
+<style> .aligncenter { text-align: center; }</style>
+{% endblock %}

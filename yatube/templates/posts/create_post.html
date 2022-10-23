@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %} Новый пост {% endblock title %}
+{% block content %}
+<div class="container py-5">
+  {% if is_edit %}
+  <h3><center>Редактировать запись</center></h3>
+{% else %}
+  <h3><center>Добавить запись</center></h3>
+{% endif %}
+{% load thumbnail %}
+</div>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 p-5">
+      <div class="card">
+        <div class="card-header">       
+          Новый пост             
+        </div>       
+        <form method="post" enctype="multipart/form-data"> {% csrf_token %} {{form.as_p}}
+          {% if is_edit %}
+          <button type="submit" class="btn btn-primary">
+            Сохранить
+            {% else %}
+            <button type="submit" class="btn btn-danger">
+            Добавить
+            {% endif %}               
+          </button>
+        </form> 
+        <div class="d-flex justify-content-end">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content%}
