@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('', include('posts.urls', namespace='posts')),
     path('admin/', admin.site.urls),
@@ -17,4 +18,5 @@ if settings.DEBUG:
     )
 
 handler404 = 'core.views.page_not_found'
-handler403 = 'core.views.permission_denied'
+handler403 = 'core.views.csrf_failure'
+handler500 = 'core.views.internal_server_error'
