@@ -19,4 +19,4 @@ class CommentForm(forms.ModelForm):
         fields = ['text']
         labels = {
             'text': 'Напишите свой комментарий к посту'
-    }
+        }

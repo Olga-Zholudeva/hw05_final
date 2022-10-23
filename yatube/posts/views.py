@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Follow, Post, Group, User, Comment
 from django.contrib.auth.decorators import login_required
 from .forms import PostForm, CommentForm
 from posts.utils import paginator_func

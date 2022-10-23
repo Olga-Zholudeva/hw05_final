@@ -1,7 +1,5 @@
-from tabnanny import verbose
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.forms import ModelForm
 from core.models import CreatedModel
 
 User = get_user_model()
@@ -60,7 +58,7 @@ class Comment(CreatedModel):
     post = models.ForeignKey(
         Post,
         blank=True,
-        null=True, 
+        null=True,
         on_delete=models.CASCADE,
         related_name='comments',
     )
