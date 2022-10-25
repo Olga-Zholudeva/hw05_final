@@ -53,7 +53,7 @@ class PostImageTests(TestCase):
         self.authorized_client.force_login(self.user)
 
     def test_page_index_show_correct_context(self):
-        """Проверяем что картинка появляется на главной странице""" 
+        """Проверяем что картинка появляется на главной странице"""
         response = self.authorized_client.get(reverse('posts:index'))
         self.assertEqual(response.context.get('post').image, self.post.image)
 
