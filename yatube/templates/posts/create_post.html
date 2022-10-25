@@ -2,12 +2,14 @@
 {% block title %} Новый пост {% endblock title %}
 {% block content %}
 <div class="container py-5">
-  {% if is_edit %}
-  <h3><center>Редактировать запись</center></h3>
-{% else %}
-  <h3><center>Добавить запись</center></h3>
-{% endif %}
-{% load thumbnail %}
+  <h3><center> 
+    {% if is_edit %}
+    Редактировать запись
+    {% else %}
+    Добавить запись
+  </center></h3>
+  {% endif %}
+  {% load thumbnail %}
 </div>
 <div class="container py-5">
   <div class="row justify-content-center">
@@ -22,8 +24,8 @@
             Сохранить
             {% else %}
             <button type="submit" class="btn btn-danger">
-            Добавить
-            {% endif %}               
+              Добавить
+          {% endif %}               
           </button>
         </form> 
         <div class="d-flex justify-content-end">

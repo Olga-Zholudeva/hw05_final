@@ -1,7 +1,8 @@
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.conf import settings
 from django import forms
+from django.conf import settings
+from django.core.cache import cache
+from django.test import Client, TestCase
+from django.urls import reverse
 from posts.forms import PostForm
 
 from ..models import Group, Post, User
@@ -50,6 +51,7 @@ class PostPegesTests(TestCase):
         }
 
     def setUp(self):
+        cache.clear()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 

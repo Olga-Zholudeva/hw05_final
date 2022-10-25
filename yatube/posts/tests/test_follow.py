@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -21,6 +22,7 @@ class FollowingTest(TestCase):
         cls.user = User.objects.create(username='user')
 
     def setUp(self):
+        cache.clear()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
@@ -30,9 +32,10 @@ class FollowingTest(TestCase):
                 'posts:profile_follow',
                 kwargs={'username': self.author})
         )
+        follow = Follow.objects.first()
         self.assertEqual(Follow.objects.count(), 1)
-        self.assertEqual(Follow.objects.first().author, self.post.author)
-        self.assertEqual(Follow.objects.first().user, self.user)
+        self.assertEqual(follow.author, self.post.author)
+        self.assertEqual(follow.user, self.user)
         self.authorized_client.post(
             reverse(
                 'posts:profile_unfollow',

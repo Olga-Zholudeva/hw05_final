@@ -7,7 +7,7 @@
   {% cache 20 index_page %}
   {% for post in page_obj %}
     {% include 'posts/includes/article.html' with all_group_records=True %}
-  {% if post.group %}
+  {% if post.author == request.user %}
   <a href = {% url 'posts:post_edit' post.pk %} >Редактировать пост</a>
   {% endif %}
   {% if not forloop.last %}<hr>{% endif %}

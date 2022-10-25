@@ -1,13 +1,13 @@
-from django.test import TestCase, Client
-from django.urls import reverse
 from django.core.cache import cache
-
+from django.test import Client, TestCase
+from django.urls import reverse
 
 from ..models import Group, Post, User
 
 
 class PostCachingTest(TestCase):
-    def test_caching_page_index(self):
+    def setUp(self):
+        cache.clear()
         self.user = User.objects.create_user(username='Test_user')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
@@ -20,13 +20,14 @@ class PostCachingTest(TestCase):
             author=self.user,
             group=self.group
         )
-        response = self.authorized_client.get(reverse('posts:index'))
+
+    def test_caching_page_index(self):
+        response_content = self.authorized_client.get(reverse('posts:index'))
         self.assertEqual(Post.objects.count(), 1)
-        content = response.content
         Post.objects.all().delete()
         self.assertEqual(Post.objects.count(), 0)
         response = self.authorized_client.get(reverse('posts:index'))
-        self.assertEqual(content, response.content)
+        self.assertEqual(response_content.content, response.content)
         cache.clear()
         response = self.authorized_client.get(reverse('posts:index'))
-        self.assertNotEqual(content, response.content)
+        self.assertNotEqual(response_content.content, response.content)

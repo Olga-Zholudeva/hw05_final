@@ -1,13 +1,13 @@
 import shutil
 import tempfile
 
-from ..models import Group, Post, User
 from django.conf import settings
+from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from django.core.cache import cache
 
+from ..models import Group, Post, User
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -48,12 +48,12 @@ class PostImageTests(TestCase):
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def setUp(self):
+        cache.clear()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
     def test_page_index_show_correct_context(self):
-        """Проверяем что картинка появляется на главной странице"""
-        cache.clear()
+        """Проверяем что картинка появляется на главной странице""" 
         response = self.authorized_client.get(reverse('posts:index'))
         self.assertEqual(response.context.get('post').image, self.post.image)
 
@@ -93,6 +93,6 @@ class PostImageTests(TestCase):
         self.assertEqual(Post.objects.count(), post_count + 1)
         new_post = Post.objects.first()
         self.assertEqual(new_post.text, form_data['text'])
-        self.assertEqual(new_post.group.id, form_data['group'])
+        self.assertEqual(new_post.group, self.group)
         self.assertEqual(new_post.author, self.user)
         self.assertEqual(new_post.image.name[:10], self.post.image.name[:10])

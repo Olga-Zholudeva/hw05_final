@@ -1,7 +1,8 @@
-from django.urls import reverse
-from django.test import TestCase, Client
 from http import HTTPStatus
 
+from django.core.cache import cache
+from django.test import Client, TestCase
+from django.urls import reverse
 
 from ..models import Group, Post, User
 
@@ -23,6 +24,7 @@ class PostUrlTest(TestCase):
         )
 
     def setUp(self):
+        cache.clear()
         self.authorized_client2 = Client()
 
     def test_pages_and_template_names_for_non_authorized_users(self):
@@ -75,8 +77,3 @@ class PostUrlTest(TestCase):
         self.assertRedirects(response, reverse(
             'posts:post_detail', kwargs={'post_id': self.post.id}
         ))
-
-    def test_request_to_a_non_existent_page(self):
-        self.guest_client = Client()
-        response = self.guest_client.get('/unexisting_page/')
-        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

@@ -1,20 +1,21 @@
-from django.db import models
-from django.contrib.auth import get_user_model
 from core.models import CreatedModel
+from django.contrib.auth import get_user_model
+from django.db import models
 
 User = get_user_model()
 
 
 class Group(models.Model):
     title = models.CharField(
+        'Название группы',
         max_length=200,
-        verbose_name='Название группы'
     )
     slug = models.SlugField(
+        'Адрес',
         unique=True,
-        verbose_name='Слаг')
+    )
     description = models.TextField(
-        verbose_name='Описание'
+        'Описание'
     )
 
     def __str__(self) -> str:
@@ -23,7 +24,7 @@ class Group(models.Model):
 
 class Post(CreatedModel):
     text = models.TextField(
-        verbose_name='Содержание'
+        'Текст поста',
     )
     author = models.ForeignKey(
         User,
@@ -37,12 +38,11 @@ class Post(CreatedModel):
         null=True,
         on_delete=models.SET_NULL,
         related_name='posts',
-        verbose_name='Тематическая группа'
     )
     image = models.ImageField(
         'Картинка',
         upload_to='posts/',
-        blank=True
+        blank=True,
     )
 
     class Meta:
@@ -67,13 +67,10 @@ class Comment(CreatedModel):
         on_delete=models.CASCADE,
         related_name='comments',
     )
-    text = models.TextField()
-    created = models.DateTimeField(
-        auto_now_add=True)
+    text = models.TextField('Коменнтарий к посту')
 
     class Meta:
         ordering = ['-pub_date']
-        verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
 
     def __str__(self) -> str:

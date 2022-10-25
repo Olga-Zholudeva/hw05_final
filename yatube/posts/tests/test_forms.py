@@ -1,3 +1,6 @@
+from http import HTTPStatus
+
+from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -14,6 +17,7 @@ class PostCreateFormTest(TestCase):
         )
 
     def setUp(self):
+        cache.clear()
         self.user = User.objects.create_user(username='test_user')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
@@ -37,7 +41,7 @@ class PostCreateFormTest(TestCase):
         self.assertEqual(Post.objects.count(), 1)
         new_post = Post.objects.first()
         self.assertEqual(new_post.text, form_data['text'])
-        self.assertEqual(new_post.group.id, form_data['group'])
+        self.assertEqual(new_post.group, self.group)
         self.assertEqual(new_post.author, self.user)
 
     def test_create_post_guest_client(self):
@@ -75,6 +79,7 @@ class PostCreateFormTest(TestCase):
         )
         post_edit = Post.objects.first()
         self.assertEqual(post_edit.text, form_data['text'])
+        self.assertEqual(post_edit.author, self.post.author)
 
     def test_edit_post_guest_client(self):
         """Неавторизованный пользователь не может отредактировать пост"""
@@ -91,4 +96,9 @@ class PostCreateFormTest(TestCase):
             data=form_data,
             follow=True
         )
-        self.assertRedirects(response, '/auth/login/?next=/posts/1/edit/')
+        self.assertRedirects(
+            response, f'{reverse("users:login")}'
+            f'?next='
+            f'{reverse("posts:post_edit", kwargs={"post_id": self.post.id})}'
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)

@@ -1,8 +1,10 @@
-from django.views.generic import CreateView
-from django.urls import reverse_lazy
-from django.core.mail import send_mail, BadHeaderError
-from django.shortcuts import render
+from django.core.mail import BadHeaderError, send_mail
 from django.http import HttpResponse
+
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+
 from .forms import CreationForm
 
 

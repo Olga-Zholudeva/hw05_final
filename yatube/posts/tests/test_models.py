@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.test import TestCase
 
 from ..models import Group, Post, User
@@ -5,6 +6,7 @@ from ..models import Group, Post, User
 
 class PostModelTest(TestCase):
     def setUp(self):
+        cache.clear()
         super().setUpClass()
         self.user = User.objects.create_user(
             username='test_user'

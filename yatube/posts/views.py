@@ -1,12 +1,13 @@
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import PostForm, CommentForm
-from posts.utils import paginator_func
-from .models import Group, Post, User, Follow
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .forms import CommentForm, PostForm
+from .models import Follow, Group, Post, User
+from .utils import paginator_func
 
 
 def index(request):
-    index_list = Post.objects.all()
+    index_list = Post.objects.all().select_related('group', 'author')
     context = {
         'page_obj': paginator_func(index_list, request)
     }
@@ -25,13 +26,10 @@ def group_posts(request, slug):
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    if request.user.is_authenticated:
-        following = Follow.objects.filter(
-            user=request.user, author=author
-        ).exists()
-    else:
-        following = False
-    profile_list = author.posts.all()
+    following = request.user.is_authenticated and Follow.objects.filter(
+        user=request.user, author=author
+    ).exists()
+    profile_list = author.posts.all().select_related('group')
     context = {
         'author': author,
         'page_obj': paginator_func(profile_list, request),
