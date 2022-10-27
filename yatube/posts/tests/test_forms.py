@@ -56,7 +56,11 @@ class PostCreateFormTest(TestCase):
             follow=True
         )
         self.assertEqual(Post.objects.count(), 0)
-        self.assertRedirects(response, '/auth/login/?next=/create/')
+        self.assertRedirects(
+            response,
+            f'{reverse("users:login")}'
+            f'?next={reverse("posts:post_create")}'
+        )
 
     def test_edit_post_authorized_client(self):
         """Авторизованный пользователь может изменить свой пост"""
@@ -66,7 +70,8 @@ class PostCreateFormTest(TestCase):
             author=self.user
         )
         form_data = {
-            'text': 'Внесли изменения в текст поста'
+            'text': 'Внесли изменения в текст поста',
+            'group': self.group.id
         }
         response = self.authorized_client.post(
             reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
@@ -80,6 +85,7 @@ class PostCreateFormTest(TestCase):
         post_edit = Post.objects.first()
         self.assertEqual(post_edit.text, form_data['text'])
         self.assertEqual(post_edit.author, self.post.author)
+        self.assertEqual(post_edit.group, self.group)
 
     def test_edit_post_guest_client(self):
         """Неавторизованный пользователь не может отредактировать пост"""

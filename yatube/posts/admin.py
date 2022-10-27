@@ -21,7 +21,12 @@ class FollowAdmin(admin.ModelAdmin):
     list_display = ('author', 'user',)
 
 
+class GroupAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug')
+    search_fields = ('title',)
+
+
 admin.site.register(Post, PostAdmin)
-admin.site.register(Group)
+admin.site.register(Group, GroupAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Follow, FollowAdmin)

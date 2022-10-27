@@ -7,6 +7,7 @@ from .utils import paginator_func
 
 
 def index(request):
+    """Генерация данных для главной страницы"""
     index_list = Post.objects.all().select_related('group', 'author')
     context = {
         'page_obj': paginator_func(index_list, request)
@@ -15,8 +16,9 @@ def index(request):
 
 
 def group_posts(request, slug):
+    """Генерация данных для страницы с постами группы"""
     group = get_object_or_404(Group, slug=slug)
-    group_list = group.posts.all()
+    group_list = group.posts.all().select_related('author')
     context = {
         'group': group,
         'page_obj': paginator_func(group_list, request)
@@ -25,6 +27,7 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
+    """Генерация данных для страницы с постами автора"""
     author = get_object_or_404(User, username=username)
     following = request.user.is_authenticated and Follow.objects.filter(
         user=request.user, author=author
@@ -39,6 +42,7 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
+    """Генерация данных для страницы выбранного поста"""
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm()
     comments = post.comments.all()
@@ -52,6 +56,7 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
+    """Создаем новый пост"""
     form = PostForm(
         request.POST or None,
         files=request.FILES or None)
@@ -66,6 +71,7 @@ def post_create(request):
 
 @login_required
 def post_edit(request, post_id):
+    """Вносим изменнения в ранее созданный пост"""
     edit_post = get_object_or_404(Post, id=post_id)
     form = PostForm(
         request.POST or None,
@@ -84,6 +90,7 @@ def post_edit(request, post_id):
 
 @login_required
 def add_comment(request, post_id):
+    """Добавляем комментарий к посту"""
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():
@@ -96,7 +103,10 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    follow_posts = Post.objects.filter(author__following__user=request.user)
+    """Генерация данных для страницы с подписками"""
+    follow_posts = Post.objects.filter(
+        author__following__user=request.user
+    ).select_related('group')
     context = {
         'page_obj': paginator_func(follow_posts, request)
     }
@@ -105,6 +115,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
+    """Подписываемся на автора"""
     author = get_object_or_404(User, username=username)
     if author != request.user and not Follow.objects.filter(
             user=request.user, author=author).exists():
@@ -117,6 +128,7 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
+    """Отписываемся от автора"""
     author = get_object_or_404(User, username=username)
     follow = Follow.objects.filter(
         user=request.user,

@@ -30,10 +30,19 @@ class PostUrlTest(TestCase):
     def test_pages_and_template_names_for_non_authorized_users(self):
         self.guest_client = Client()
         url_addresses_templates_names = {
-            '/': 'posts/index.html',
-            '/group/test_slug/': 'posts/group_list.html',
-            '/profile/test_user/': 'posts/profile.html',
-            '/posts/1/': 'posts/post_detail.html',
+            reverse('posts:index'): 'posts/index.html',
+            reverse(
+                'posts:group_list',
+                kwargs={'slug': self.group.slug}
+            ): 'posts/group_list.html',
+            reverse(
+                'posts:profile',
+                kwargs={'username': self.user}
+            ): 'posts/profile.html',
+            reverse(
+                'posts:post_detail',
+                kwargs={'post_id': self.post.id}
+            ): 'posts/post_detail.html',
         }
         for address, template in url_addresses_templates_names.items():
             with self.subTest(address=address):
@@ -46,8 +55,11 @@ class PostUrlTest(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         url_addresses_templates_names = {
-            '/create/': 'posts/create_post.html',
-            '/posts/1/edit/': 'posts/create_post.html',
+            reverse('posts:post_create'): 'posts/create_post.html',
+            reverse(
+                'posts:post_edit',
+                kwargs={'post_id': self.post.id}
+            ): 'posts/create_post.html',
         }
         for address, template in url_addresses_templates_names.items():
             with self.subTest(address=address):
@@ -58,8 +70,12 @@ class PostUrlTest(TestCase):
     def test_redirect_guest_user_fo_page_post_edit_create(self):
         self.guest_client = Client()
         url_page_redirect_address = {
-            '/create/': '/auth/login/?next=/create/',
-            '/posts/1/edit/': '/auth/login/?next=/posts/1/edit/'
+            reverse('posts:post_create'):
+            f'{reverse("users:login")}?next={reverse("posts:post_create")}',
+            reverse('posts:post_edit', kwargs={'post_id': self.post.id}):
+            f'{reverse("users:login")}'
+            f'?next='
+            f'{reverse("posts:post_edit", kwargs={"post_id": self.post.id})}'
         }
         for page, redirect_address in url_page_redirect_address.items():
             with self.subTest(page=page):
